@@ -1,46 +1,8 @@
 #include "defs/defs.h"
- 
-int showMenu();
-void exitRouter();
-void printStatus();
-void sendPackage();
-void showNeighbors();
 
-void* controller(void* arg) {
-    printMsg("\n\n----------------------\n");
 
-    while(1) {
-        int buffer = showMenu();
-
-        if (buffer == 0) {
-            exitRouter();
-            break;
-
-        } else if (buffer == 3) {
-            showNeighbors();
-
-        } else if (buffer == 2) {
-            printStatus();
-
-        } else if (buffer == 1)  {
-            sendPackage();
-            
-        }
-    }
-
-    return NULL;
-}
-
-int showMenu() {
-    int opt;
-
-    printMsg("\nDigite: \n1 - Enviar pacote.\n2 - Exibir status. \n3 - Mostrar vizinhos.\n0 - Sair.\n\nrouter %d -> ", routerId);
-    scanf("%d", opt);
-
-    return opt;
-}
-
-void exitRouter() {
+void exitRouter()
+{
     pthread_cancel(thread_receiver);
     pthread_cancel(thread_sender);
     pthread_cancel(thread_handler);
@@ -48,7 +10,8 @@ void exitRouter() {
     printMsg("Exiting... \n");
 }
 
-void printStatus() {
+void printStatus()
+{
     printMsg("--- Status do Roteador ---\n");
     printMsg("ID: %d\n", routerId);
     printMsg("IP: %s\n", ip);
@@ -56,36 +19,41 @@ void printStatus() {
     printMsg("--------------------------\n\n");
 }
 
-void sendPackage() {
-    char type[100], sendTo[100], payload[100];
-    printMsg("Digite o tipo do pacote: \n0 - Controle\n1 - Dados\n\n->");
-    scanf("%s", type);
+void sendPackage()
+{
+    int type, sendTo;
+    char payload[100];
+    printMsg("Type: \n0 - Control\n1 - Data\n\n->");
+    scanf("%d", type);
 
-    if(!strcmp(type, "0") == 0 && !strcmp(type, "1") == 0) {
-        printMsg("Tipo inválido!\n\n");
+    if (type != 0 && type != 1)
+    {
+        printMsg("Invalid type... expected value 0 || 1\n\n");
         return;
     }
 
-    printMsg("Digite o numero do roteador que deseja enviar o pacote:\n");
-    for (int i = 0; i < R_SIZE; i++) {
-        if (routers[i].id != routerId && routers[i].id != -1) {
+    printMsg("Type the receiver id:\n");
+    for (int i = 0; i < R_SIZE; i++)
+    {
+        if (routers[i].id != routerId && routers[i].id != -1)
+        {
             printMsg("%d - %s:%d\n", routers[i].id, routers[i].ip, routers[i].port);
         }
     }
     printMsg("\n->");
-    scanf("%s", sendTo);
+    scanf("%d", sendTo);
 
-    int sendToId = atoi(sendTo);
-
-    if((sendToId < 0 || sendToId == routerId)) {
-        printMsg("Roteador inválido!\n\n");
+    if ((sendTo < 0 || sendTo == routerId))
+    {
+        printMsg("Invalid router...\n\n");
         return;
     }
 
-    Router sendToRouter = findRouterById(sendToId);
+    Router sendToRouter = routers[sendTo - 1];
 
-    if(sendToRouter.id == -1) {
-        printMsg("Roteador não encontrado!\n\n");
+    if (sendToRouter.id == -1)
+    {
+        printMsg("Router not found...\n\n");
         return;
     }
 
@@ -93,26 +61,58 @@ void sendPackage() {
     printMsg("\n->");
     scanf("%s", payload);
 
-    char package[B_LENGTH];
-    strcpy(package, type);
+    Package package;
 
+    package.type = type;
+    package.receiver = sendTo;
+    package.sender = routerId;
 
-    char sender[R_SIZE];
-    sprintMsg(sender, "%d", routerId);
-    strcat(package, sender);
+    strcpy(package.payload, payload);
 
-    strcat(package, sendTo);
-    strcat(package, payload);
-
-    addToOutboundQueue(package, sendToRouter.port, sendToRouter.ip);
-    printQueue(&outbound);
+    insertIntoOutcoming(package);
 }
 
-void showNeighbors() {
-    for (int i = 0; i < R_SIZE; i++) {
-        if (routers[i].id != routerId && routers[i].id != -1 && neighbors[i] != -1) {
-            printMsg("Vizinho: %d - %s:%d, custo: %d\n", routers[i].id, routers[i].ip, routers[i].port, neighbors[i]);
+void showNeighbors()
+{
+    for (int i = 0; i < R_SIZE; i++)
+    {
+        if (routers[i].id != routerId && routers[i].id != -1 && neighbors[i] != -1)
+        {
+            printMsg("Neighbor: %d - %s:%d, cost: %d\n", routers[i].id, routers[i].ip, routers[i].port, neighbors[i]);
         }
     }
     printMsg("\n----------------------\n");
+}
+
+void *controller(void *arg)
+{
+    printMsg("\n\n----------------------\n");
+
+    while (1)
+    {
+        int opt;
+
+        printMsg("\nChoose: \n1 - Send package\n2 - Show status \n3 - Show neighbors\n0 - Exit.\n\nrouter %d -> ", routerId);
+        scanf("%d", opt);
+
+        if (opt == 0)
+        {
+            exitRouter();
+            break;
+        }
+        else if (opt == 3)
+        {
+            showNeighbors();
+        }
+        else if (opt == 2)
+        {
+            printStatus();
+        }
+        else if (opt == 1)
+        {
+            sendPackage();
+        }
+    }
+
+    return NULL;
 }

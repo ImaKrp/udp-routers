@@ -33,7 +33,7 @@ typedef struct {
 } Router;
 
 typedef struct {
-    char type[2];       // 0 => controle || 1 => dados
+    int type;       // 0 => controle || 1 => dados
     int sender; 
     int receiver;
     char payload[140];
