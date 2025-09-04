@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "get_cfg.h": "c",
+    "helper.h": "c"
+  }
+}
