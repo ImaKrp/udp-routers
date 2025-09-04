@@ -45,7 +45,7 @@ int sender(){
         
         Package pkg = out_q.queue[out_q.first];
 
-        RemoveFromOutcoming();
+        RemoveFromOutgoing();
 
         pthread_mutex_unlock(&out_q.q_mutex);
 

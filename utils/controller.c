@@ -69,7 +69,7 @@ void sendPackage()
 
     strcpy(package.payload, payload);
 
-    insertIntoOutcoming(package);
+    insertIntoOutgoing(package);
 }
 
 void showNeighbors()
