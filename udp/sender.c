@@ -43,6 +43,8 @@ int sender(){
 
         pthread_mutex_lock(&out_q.q_mutex);
         
+        sem_post(&out_q.size);
+
         Package pkg = out_q.queue[out_q.first];
 
         RemoveFromOutgoing();

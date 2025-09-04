@@ -43,8 +43,9 @@ typedef struct {
 typedef struct {
     Package queue[R_SIZE];
     int first;
-    int last; 
+    int next; 
     pthread_mutex_t q_mutex;
+    pthread_mutex_t q_full;
     sem_t size;
 } Queue;
 

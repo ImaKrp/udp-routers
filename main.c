@@ -29,7 +29,9 @@ int main(int argc, char const *argv[])
 
     sem_init(&in_q.size, 0, 0);
     sem_init(&out_q.size, 0, R_SIZE);
+    pthread_mutex_init(&out_q.q_full, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&out_q.q_mutex, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&in_q.q_full, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&in_q.q_mutex, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&print_mtx, PTHREAD_MUTEX_RECURSIVE);
 
