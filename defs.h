@@ -39,8 +39,7 @@ typedef struct {
     int first;
     int next; 
     pthread_mutex_t q_mutex;
-    pthread_mutex_t q_full;
-    pthread_mutex_t q_empty;
+    sem_t size;
 } Queue;
 
 

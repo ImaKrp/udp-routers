@@ -3,15 +3,14 @@
 int insertIntoQueue(Queue *queue, Package *pkg)
 {
 
-    pthread_mutex_unlock(&out_q.q_empty);
+
     
-    // pthread_mutex_lock(&queue->q_mutex);printMsg("oi");
+    pthread_mutex_lock(&queue->q_mutex);
 
-    // queue->queue[queue->next] = *pkg;
-    // queue->next = (queue->next + 1) % R_SIZE;
-    // pthread_mutex_unlock(&queue->q_mutex);
-    // sem_post(&queue->size);
-
+    queue->queue[queue->next] = *pkg;
+    queue->next = (queue->next + 1) % R_SIZE;
+    pthread_mutex_unlock(&queue->q_mutex);
+    // pthread_mutex_unlock(&out_q.q_empty);
     return 0;
 }
 
@@ -21,10 +20,10 @@ int removeFromQueue(Queue *queue, Package *pkg)
     memset(&queue->queue[queue->first], 0, sizeof(Package));
     queue->first = (queue->first + 1) % R_SIZE;
     pthread_mutex_unlock(&queue->q_mutex);
-    pthread_mutex_unlock(&queue->q_full);
+    // pthread_mutex_unlock(&queue->q_full);
 
     if(!&queue->queue[queue->first]){
-        pthread_mutex_lock(&out_q.q_empty);
+        // pthread_mutex_lock(&out_q.q_empty);
     }
 
     
