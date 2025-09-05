@@ -1,4 +1,4 @@
-#include "defs/defs.h"
+#include "../defs.h"
 
 void failedThread(char *type, char *name){
     pthread_mutex_lock(&print_mtx); 

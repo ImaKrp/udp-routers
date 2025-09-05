@@ -1,46 +1,52 @@
-#include "defs/defs.h"
+#include "../defs.h"
 
+int insertIntoQueue(Queue *queue, Package *pkg)
+{
 
-int insertIntoQueue(Queue *queue, Package *pkg) {
+    pthread_mutex_unlock(&out_q.q_empty);
+    
+    // pthread_mutex_lock(&queue->q_mutex);printMsg("oi");
 
-    int size;
-    sem_getvalue(&queue->size, &size);
-    if(size==10){
-        pthread_mutex_lock(&queue->q_full);
-    }
-
-    pthread_mutex_lock(&queue->q_mutex);
-    queue->queue[queue->next] = *pkg;
-    queue->next = (queue->next + 1) % R_SIZE;
-    pthread_mutex_unlock(&queue->q_mutex);
-    sem_post(&queue->size);
+    // queue->queue[queue->next] = *pkg;
+    // queue->next = (queue->next + 1) % R_SIZE;
+    // pthread_mutex_unlock(&queue->q_mutex);
+    // sem_post(&queue->size);
 
     return 0;
 }
 
-int removeFromQueue(Queue *queue, Package *pkg) {
+int removeFromQueue(Queue *queue, Package *pkg)
+{
     pthread_mutex_lock(&queue->q_mutex);
     memset(&queue->queue[queue->first], 0, sizeof(Package));
     queue->first = (queue->first + 1) % R_SIZE;
     pthread_mutex_unlock(&queue->q_mutex);
     pthread_mutex_unlock(&queue->q_full);
 
-    sem_wait(&queue->size);
+    if(!&queue->queue[queue->first]){
+        pthread_mutex_lock(&out_q.q_empty);
+    }
+
+    
     return 0;
 }
 
-int insertIntoIncoming(Package package) {
+int insertIntoIncoming(Package package)
+{
     return insertIntoQueue(&in_q, &package);
 }
 
-int removeFromIncoming(Package *package) {
+int removeFromIncoming(Package *package)
+{
     return removeFromQueue(&in_q, package);
 }
 
-int insertIntoOutgoing(Package package) {
+int insertIntoOutgoing(Package package)
+{
     return insertIntoQueue(&out_q, &package);
 }
 
-int removeFromOutgoing(Package *package) {
+int removeFromOutgoing(Package *package)
+{
     return removeFromQueue(&out_q, package);
 }

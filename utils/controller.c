@@ -1,5 +1,4 @@
-#include "defs/defs.h"
-
+#include "../defs.h"
 
 void exitRouter()
 {
@@ -21,10 +20,14 @@ void printStatus()
 
 void sendPackage()
 {
-    int type, sendTo;
     char payload[100];
     printMsg("Type: \n0 - Control\n1 - Data\n\n->");
-    scanf("%d", type);
+
+    char typeC[100];
+    fflush(stdout);
+    fgets(typeC, sizeof(typeC), stdin);
+
+    int type = atoi(typeC);
 
     if (type != 0 && type != 1)
     {
@@ -41,7 +44,11 @@ void sendPackage()
         }
     }
     printMsg("\n->");
-    scanf("%d", sendTo);
+    char sendToC[100];
+    fflush(stdout);
+    fgets(sendToC, sizeof(sendToC), stdin);
+
+    int sendTo = atoi(sendToC);
 
     if ((sendTo < 0 || sendTo == routerId))
     {
@@ -57,9 +64,10 @@ void sendPackage()
         return;
     }
 
-    printMsg("Digite o payload: ");
+    printMsg("Type the payload: ");
     printMsg("\n->");
-    scanf("%s", payload);
+    fflush(stdout);
+    fgets(payload, sizeof(payload), stdin);
 
     Package package;
 
@@ -90,10 +98,14 @@ void *controller(void *arg)
 
     while (1)
     {
-        int opt;
+        char optC[100];
 
         printMsg("\nChoose: \n1 - Send package\n2 - Show status \n3 - Show neighbors\n0 - Exit.\n\nrouter %d -> ", routerId);
-        scanf("%d", opt);
+
+        fflush(stdout);
+        fgets(optC, sizeof(optC), stdin);
+
+        int opt = atoi(optC);
 
         if (opt == 0)
         {

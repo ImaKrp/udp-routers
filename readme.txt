@@ -1,0 +1,1 @@
+gcc -w -pthread *.c utils/*.c udp/*.c -o teste

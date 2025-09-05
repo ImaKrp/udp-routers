@@ -9,15 +9,9 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <stdarg.h>
 
-#include "controller.h"
-// #include "receiver.h"
-// #include "sender.h"
-#include "get_cfg.h"
-#include "helper.h"
-#include "helper.h"
-#include "udp/sender.h"
-#include "udp/receiver.h"
+
 
 #define R_SIZE 10
 #define IP_SIZE 15
@@ -46,7 +40,7 @@ typedef struct {
     int next; 
     pthread_mutex_t q_mutex;
     pthread_mutex_t q_full;
-    sem_t size;
+    pthread_mutex_t q_empty;
 } Queue;
 
 
@@ -60,5 +54,15 @@ extern int port;
 extern pthread_t thread_receiver, thread_sender, thread_handler,thread_controller;
 extern Router routers[R_SIZE];
 extern pthread_mutex_t print_mtx;
+
+#include "utils/controller.h"
+// #include "receiver.h"
+// #include "sender.h"
+#include "utils/get_cfg.h"
+#include "utils/helper.h"
+#include "utils/helper.h"
+#include "utils/queue_handler.h"
+#include "udp/sender.h"
+#include "udp/receiver.h"
 
 #endif

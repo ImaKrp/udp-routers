@@ -1,8 +1,6 @@
 #ifndef QUEUE_HANDLER_H
 #define QUEUE_HANDLER_H
 
-#include "defs/defs.h"
-
 int insertIntoIncoming(Package package);
 
 int removeFromIncoming(Package *package);

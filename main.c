@@ -1,10 +1,10 @@
-#include "defs/defs.h"
+#include "defs.h"
 
 Queue in_q;
 Queue out_q;
 int neighbors[R_SIZE];
 int routerId = -1;
-char server[IP_SIZE];
+char ip[IP_SIZE];
 int port = 0;
 pthread_mutex_t print_mtx;
 pthread_t thread_receiver, thread_sender, thread_handler, thread_controller;
@@ -12,6 +12,25 @@ Router routers[R_SIZE];
 
 int main(int argc, char const *argv[])
 {
+
+    pthread_mutex_init(&out_q.q_empty, NULL);
+    pthread_mutexattr_settype(&out_q.q_empty, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&out_q.q_full, NULL);
+    pthread_mutexattr_settype(&out_q.q_full, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&out_q.q_mutex, NULL);
+    pthread_mutexattr_settype(&out_q.q_mutex, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&in_q.q_full, NULL);
+    pthread_mutexattr_settype(&in_q.q_full, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&in_q.q_mutex, NULL);
+    pthread_mutexattr_settype(&in_q.q_mutex, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&print_mtx, NULL);
+    pthread_mutexattr_settype(&print_mtx, PTHREAD_MUTEX_RECURSIVE);
+
     if (argc != 2)
     {
         printMsg("Exiting... expected use << router [routerId] >> | 1 <= routerID <= 10\n");
@@ -27,17 +46,9 @@ int main(int argc, char const *argv[])
     if (getConfigs() == 1)
         return 1;
 
-    sem_init(&in_q.size, 0, 0);
-    sem_init(&out_q.size, 0, R_SIZE);
-    pthread_mutex_init(&out_q.q_full, PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init(&out_q.q_mutex, PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init(&in_q.q_full, PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init(&in_q.q_mutex, PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init(&print_mtx, PTHREAD_MUTEX_RECURSIVE);
-
     if (pthread_create(&thread_receiver, NULL, &receiver, NULL) != 0)
     {
-       failedThread("create", "RECEIVER");
+        failedThread("create", "RECEIVER");
         return -1;
     }
 
@@ -55,22 +66,22 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    if ( pthread_join(thread_receiver, NULL) != 0)
+    if (pthread_join(thread_receiver, NULL) != 0)
     {
         failedThread("join", "RECEIVER");
         return -1;
     }
-    if ( pthread_join(thread_sender, NULL) != 0)
+    if (pthread_join(thread_sender, NULL) != 0)
     {
         failedThread("join", "SENDER");
         return -1;
     }
-    if ( pthread_join(thread_handler, NULL) != 0)
+    if (pthread_join(thread_handler, NULL) != 0)
     {
         failedThread("join", "HANDLER");
         return -1;
     }
-    if ( pthread_join(thread_controller, NULL) != 0)
+    if (pthread_join(thread_controller, NULL) != 0)
     {
         failedThread("join", "CONTROLLER");
         return -1;

@@ -1,13 +1,12 @@
-#include "defs/defs.h"
+#include "../defs.h"
 
  
-void die(char *s)
+void die_r(char *s)
 {
     perror(s);
     exit(1);
 }
- 
-int receiver(void)
+ void* receiver(void* arg)
 {
     struct sockaddr_in si_me, si_other;
     int s, i, slen = sizeof(si_other) , recv_len;
@@ -16,7 +15,7 @@ int receiver(void)
 
     if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
     {
-        die("socket");
+        die_r("socket");
     }
 
     memset((char *) &si_me, 0, sizeof(si_me));
@@ -27,7 +26,7 @@ int receiver(void)
      
     if( bind(s , (struct sockaddr*)&si_me, sizeof(si_me) ) == -1)
     {
-        die("bind");
+        die_r("bind");
     }
      
     while(1)
@@ -36,7 +35,7 @@ int receiver(void)
 
         if ((recv_len = recvfrom(s, &pkg, sizeof(pkg), 0, (struct sockaddr *) &si_other, &slen)) == -1)
         {
-            die("recvfrom()");
+            die_r("recvfrom()");
         }
          
       //o que fazer com o paqcote u.u

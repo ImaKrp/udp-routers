@@ -1,6 +1,8 @@
 {
   "files.associations": {
     "get_cfg.h": "c",
-    "helper.h": "c"
+    "helper.h": "c",
+    "controller.h": "c",
+    "receiver.h": "c"
   }
 }

@@ -1,4 +1,4 @@
-#include "defs/defs.h"
+#include "../defs.h"
 
 int getConfigs()
 {
@@ -20,12 +20,11 @@ int getConfigs()
         printMsg("Exiting... Couldn't locate %s\n", path_els);
         return 1;
     }
-
     while (fgets(line, sizeof(line), cur_file) != NULL)
     {
         int r1, r2, cost;
         int qtyValues = sscanf(line, "%d %d %d", &r1, &r2, &cost);
-
+        
         if (qtyValues == 3)
         {
             if (r1 == routerId)
@@ -37,14 +36,12 @@ int getConfigs()
                 neighbors[r1 - 1] = cost;
             }
             else
-                printMsg("... couldn't treat line %d. skipping ...\n", cur_line);
+                printMsg("... no router %d in line %d. skipping ...\n", routerId, cur_line);
         }
         else
             printMsg("... couldn't treat line %d. skipping ...\n", cur_line);
-
         cur_line++;
     }
-
     fclose(cur_file);
 
     cur_file = fopen(pathRtr, "r");
@@ -70,7 +67,7 @@ int getConfigs()
             if (router == routerId)
             {
                 port = cur_port;
-                strcpy(ip, ip);
+                strcpy(ip, cur_ip);
             }
         }
         else
