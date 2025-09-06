@@ -38,7 +38,7 @@ void sendPackage()
     printMsg("Type the receiver id:\n");
     for (int i = 0; i < R_SIZE; i++)
     {
-        if (routers[i].id != routerId && routers[i].id != -1)
+        if (neighbors[i] != 0 && neighbors[i] != -1)
         {
             printMsg("%d - %s:%d\n", routers[i].id, routers[i].ip, routers[i].port);
         }

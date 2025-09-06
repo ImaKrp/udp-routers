@@ -41,34 +41,19 @@ int sendPackage_(Package package)
 
 void *sender(void *arg)
 {
-    int value;
-
-    sem_getvalue(&out_q.size, &value);
-     printMsg("%d", value);
-    sem_wait(&out_q.size);
     while (1)
     {
         sem_wait(&out_q.size);
-        sem_wait(&out_q.size);
-        sem_wait(&out_q.size);
-        sem_wait(&out_q.size);
-        sem_wait(&out_q.size);
-
-        fflush(stdout);
 
         pthread_mutex_lock(&out_q.q_mutex);
 
-        printMsg("a'e");
+        Package pkg = out_q.queue[out_q.first];
+        sem_post(&out_q.size);
 
-        sem_getvalue(&out_q.size, &value);
-     printMsg("%d", value);
+        removeFromOutgoing(&pkg);
 
-        // Package pkg = out_q.queue[out_q.first];
+        pthread_mutex_unlock(&out_q.q_mutex);
 
-        // removeFromOutgoing(&pkg);
-
-        // pthread_mutex_unlock(&out_q.q_mutex);
-
-        // sendPackage_(pkg);
+        sendPackage_(pkg);
     }
 }
