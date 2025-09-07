@@ -40,7 +40,21 @@ void die_r(char *s)
          
       //o que fazer com o paqcote u.u
 
-        printMsg("Received package: from=%d, msg=%s\n", pkg.sender, pkg.payload);
+        printMsg("Received package: from=%d, to=%d, type=%d\n", pkg.sender, pkg.receiver, pkg.type);
+
+
+        if(pkg.type == 1){
+        Package package;
+
+        package.type = 0;
+        package.receiver = pkg.sender;
+        package.sender = routerId;
+
+        char buf[256];
+        snprintf(package.payload, sizeof(buf), "pkg received by router %d", pkg.sender);
+
+
+        insertIntoOutgoing(package);}
     }
  
     close(s);

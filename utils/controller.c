@@ -11,7 +11,7 @@ void exitRouter()
 
 void printStatus()
 {
-    printMsg("--- Status do Roteador ---\n");
+    printMsg("--------------------------\n");
     printMsg("ID: %d\n", routerId);
     printMsg("IP: %s\n", ip);
     printMsg("Porta: %d\n", port);

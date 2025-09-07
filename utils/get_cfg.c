@@ -2,7 +2,7 @@
 
 int getConfigs()
 {
-    printMsg("Setting up router....\nReading configs from files at configs folder....\n");
+    // printMsg("Setting up router....\nReading configs from files at configs folder....\n");
     FILE *cur_file;
     int cur_line = 1;
     char line[50];
@@ -35,11 +35,11 @@ int getConfigs()
             {
                 neighbors[r1 - 1] = cost;
             }
-            else
-                printMsg("... no router %d in line %d. skipping ...\n", routerId, cur_line);
+            // else
+            //     printMsg("... no router %d in line %d. skipping ...\n", routerId, cur_line);
         }
-        else
-            printMsg("... couldn't treat line %d. skipping ...\n", cur_line);
+        // else
+        //     printMsg("... couldn't treat line %d. skipping ...\n", cur_line);
         cur_line++;
     }
     fclose(cur_file);
@@ -70,8 +70,8 @@ int getConfigs()
                 strcpy(ip, cur_ip);
             }
         }
-        else
-            printMsg("... couldn't treat line %d. skipping ...\n", cur_line);
+        // else
+        //     printMsg("... couldn't treat line %d. skipping ...\n", cur_line);
 
         cur_line++;
     }
