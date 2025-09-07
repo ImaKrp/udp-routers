@@ -18,7 +18,7 @@ void printStatus()
     printMsg("--------------------------\n\n");
 }
 
-void sendPackage()
+void createPackage()
 {
     char payload[100];
     printMsg("Type: \n0 - Control\n1 - Data\n\n->");
@@ -122,7 +122,7 @@ void *controller(void *arg)
         }
         else if (opt == 1)
         {
-            sendPackage();
+            createPackage();
         }
     }
 

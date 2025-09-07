@@ -3,10 +3,12 @@
 
 int insertIntoIncoming(Package package);
 
-int removeFromIncoming(Package *package);
+int removeFromIncoming();
 
 int insertIntoOutgoing(Package package); 
 
-int removeFromOutgoing(Package *package);
+int removeFromOutgoing();
+
+int queue_init(Queue *queue);
 
 #endif

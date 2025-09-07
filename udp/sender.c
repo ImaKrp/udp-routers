@@ -7,7 +7,7 @@ void die_s(char *s)
     exit(1);
 }
 
-int sendPackage_(Package package)
+int sendPackage(Package package)
 {
     struct sockaddr_in si_other;
     int s, i, slen = sizeof(si_other);
@@ -48,12 +48,11 @@ void *sender(void *arg)
         pthread_mutex_lock(&out_q.q_mutex);
 
         Package pkg = out_q.queue[out_q.first];
-        sem_post(&out_q.size);
 
         removeFromOutgoing(&pkg);
 
         pthread_mutex_unlock(&out_q.q_mutex);
 
-        sendPackage_(pkg);
+        sendPackage(pkg);
     }
 }

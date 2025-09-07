@@ -1,16 +1,23 @@
 #include "../defs.h"
 
+int queue_init(Queue *queue){
+
+    sem_init(&queue->size,0 ,0);
+    
+    for(int i = 0; i<R_SIZE; i++){
+        queue->queue[i].type = -1;
+    }
+    return 0;
+}
+
 int insertIntoQueue(Queue *queue, Package *pkg)
 {
-    int cur_size;
-    sem_getvalue(&queue->size, &cur_size);
+    pthread_mutex_lock(&queue->q_mutex);
 
-    if(cur_size==R_SIZE){
+      if(queue->queue[queue->next].type != -1){
         printMsg("Queue is full... discarding pkg...");
         return -1;
     }
-    
-    pthread_mutex_lock(&queue->q_mutex);
 
     queue->queue[queue->next] = *pkg;
     queue->next = (queue->next + 1) % R_SIZE;
@@ -19,13 +26,22 @@ int insertIntoQueue(Queue *queue, Package *pkg)
     return 0;
 }
 
-int removeFromQueue(Queue *queue, Package *pkg)
+int removeFromQueue(Queue *queue)
 {
     pthread_mutex_lock(&queue->q_mutex);
-    memset(&queue->queue[queue->first], 0, sizeof(Package));
+    queue->queue[queue->first].type = -1;
+
+    Package *p = &queue->queue[queue->first];
+
+    strcpy(p->payload, "");
+    strcpy(p->buffer, "");
+
+    p->receiver = -1;
+    p->sender = -1;
+    p->type = -1;
+
     queue->first = (queue->first + 1) % R_SIZE;
     pthread_mutex_unlock(&queue->q_mutex);
-    sem_wait(&queue->size);
     
     return 0;
 }
@@ -35,9 +51,9 @@ int insertIntoIncoming(Package package)
     return insertIntoQueue(&in_q, &package);
 }
 
-int removeFromIncoming(Package *package)
+int removeFromIncoming()
 {
-    return removeFromQueue(&in_q, package);
+    return removeFromQueue(&in_q);
 }
 
 int insertIntoOutgoing(Package package)
@@ -45,7 +61,7 @@ int insertIntoOutgoing(Package package)
     return insertIntoQueue(&out_q, &package);
 }
 
-int removeFromOutgoing(Package *package)
+int removeFromOutgoing()
 {
-    return removeFromQueue(&out_q, package);
+    return removeFromQueue(&out_q);
 }

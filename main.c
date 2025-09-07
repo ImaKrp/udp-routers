@@ -13,12 +13,13 @@ Router routers[R_SIZE];
 int main(int argc, char const *argv[])
 {
 
-    sem_init(&out_q.size,0 ,0);
-    sem_init(&in_q.size,0 ,0);
+    queue_init(&out_q);
+    queue_init(&in_q);
+
 
     pthread_mutexattr_t attr;
-        pthread_mutexattr_init(&attr);
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
 
     pthread_mutex_init(&out_q.q_mutex, &attr);
 
