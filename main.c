@@ -49,14 +49,18 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
-    sleep(1);
+    if (pthread_create(&thread_handler, NULL, &handler, NULL) != 0)
+    {
+        failedThread("create", "HANBDLER");
+        return -1;
+    }
+
     if (pthread_create(&thread_sender, NULL, &sender, NULL) != 0)
     {
         failedThread("create", "SENDER");
         return -1;
     }
 
-    sleep(1);
     if (pthread_create(&thread_controller, NULL, &controller, NULL) != 0)
     {
         failedThread("create", "CONTROLLER");
